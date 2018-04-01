@@ -22,16 +22,23 @@
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css' />
     <link href="assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
     <!-- <div ng-include="'includes.htm'"></div> -->
+    
+    <!-- slick -->
+    <link rel="stylesheet" type="text/css" href="slick/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="slick/slick-theme.css"/>
 </head>
 <body>
 
 
 <div class="wrapper" ng-controller="mainController">
-        
-        <div ng-show="logged">
+    <!-- Trigger the modal with a button -->
+<!-- <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button> -->
+
+        <div ng-show="checkCookie()">
             <div ng-include="'sidebar.htm'"></div> 
         </div>
-        <div ng-view></div>
+            <div ng-view></div>
+
 
 </div>
 
@@ -50,19 +57,26 @@
 <script src="assets/js/light-bootstrap-dashboard.js"></script>
 <!-- Light Bootstrap Table DEMO methods, don't include it in your project! -->
 <script src="assets/js/demo.js"></script>
+<script type="text/javascript" src="slick/slick.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
-
+        $('.your-class').slick({
+            dots: true,
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            infinite: false,
+            nextArrow: "<button type=\"button\" class=\"btn btn-round\">Continue</button>",
+        });
        // demo.initChartist();
 
-        $.notify({
-            icon: 'pe-7s-gift',
-            message: "Welcome to <b>Light Bootstrap Dashboard</b> - a beautiful freebie for every web developer."
+        // $.notify({
+        //     icon: 'pe-7s-gift',
+        //     message: "Welcome to <b>Light Bootstrap Dashboard</b> - a beautiful freebie for every web developer."
 
-        },{
-            type: 'info',
-            timer: 4000
-        });
+        // },{
+        //     type: 'info',
+        //     timer: 4000
+        // });
 
     });
 </script>

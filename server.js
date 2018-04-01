@@ -27,9 +27,10 @@ function decrypt(text)
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(cookieParser());
+
 
 var db = new sqlite.Database('planzen',sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE,(err)=>{
 	if(err)
@@ -59,7 +60,8 @@ app.post('/api/auth',function(req,res){
 		if(row)
 		{
 			let sess_identifier = encrypt(row.id+"");
-			res.cookie('sess_identifier', sess_identifier , {maxAge: 10800}).send(JSON.stringify({success:"Authentication Successful"}));
+
+			res.send(JSON.stringify({success:"Authentication Successful",id:sess_identifier}));
 		}
 		else
 			res.send(JSON.stringify({error:"Authentication Error"}));

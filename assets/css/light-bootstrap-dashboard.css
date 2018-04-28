@@ -2058,7 +2058,7 @@ fieldset[disabled] .btn-neutral.active {
     margin: 10px 10px 10px 0px;
 }
 
-.dropdown-menu {
+.dropdown-menu .dropdown .dropdown-menu{
     visibility: hidden;
     margin: 0;
     padding: 0;

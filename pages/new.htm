@@ -1,47 +1,586 @@
 <div class="main-panel">
     <div ng-include="'navbar.htm'"></div>
-   <br><br><br>
-
+   <br><br><br><br>
+   <style type="text/css">
+	   	input[type="number"]::-webkit-outer-spin-button,
+		input[type="number"]::-webkit-inner-spin-button {
+		    -webkit-appearance: none;
+		    margin: 0;
+		}
+		input[type="number"] {
+		    -moz-appearance: textfield;
+		}
+   </style>
     <div class="container-fluid">
-    	<div class="col-sm-4"></div>
-    	<div class="card col-sm-4">
-    		<div class="container-fluid text-center">
-				
-				<div class="container-fluid ">
-	    			<div class="your-class">
-						<div>
-							<br><br><br>
-							<h3>Add new Item</h3><br>
-							<p class="small">
-								Name your task, item or note?
-							</p>
-							<input type="text" class="form-control" placeholder="Title of Note"><br>
-							<a class="text-muted " >Advanced Mode</a>
-							<br><br>
-						</div>
-						<div>
-							<br><br><br>
-							<h3>So when is the due date?</h3><br>
-							<p class="small">
-								Deadline
-							</p>
-							<input type="text" class="form-control" placeholder="Title of Note"><br>
-							<a class="text-muted " >Advanced Mode</a>
-							<br><br>
-						</div>
-						<div>your content</div>
-					</div>
-				</div>
 
-				<br><br><br>
-
-
-
-
-
-
+    	<!-- navigation -->
+    	<div class="col-sm-4">
+    		<div class="container-fluid">
+    			<div class="col-sm-4"></div>
+    			<div class="col-sm-8">
+    				<br><br>	
+    				<div class="card">
+    					<div class="container-fluid">
+    						<br>
+	    					<div class="list-group" >
+	    						<a ng-click="item_type='quick'; config='basic'; init();"  		class="list-group-item"   	ng-class="{'active': config=='basic' && item_type=='quick'}" >Quick Note</a>
+	    						<a ng-click="item_type='action'; config='basic'; init();"  		class="list-group-item "   	ng-class="{'active': config=='basic' && item_type=='action'}" >Action</a>
+	    						<a ng-click="item_type='task'; config='basic'; init();"  		class="list-group-item "   	ng-class="{'active': config=='basic' && item_type=='task'}" >Task with Due Date</a>
+	    						<a ng-click="item_type='activity'; config='basic'; init();"  	class="list-group-item "   	ng-class="{'active': config=='basic' && item_type=='activity'}" >Activity with Schedule</a>
+	    						<a ng-click="item_type='project'; config='basic'; init();"  	class="list-group-item "   	ng-class="{'active': config=='basic' && item_type=='project'}" >Project with multi-step</a>
+	    						<a ng-click="item_type='reminder'; config='basic'; init();"  	class="list-group-item "   	ng-class="{'active': config=='basic' && item_type=='reminder'}" >Reminder</a>
+	    					</div>
+    					</div>
+    				</div>
+    				<div class="card">
+    					<div class="container-fluid">
+    						<br>
+	    					<div class="list-group" >
+	    						<a ng-click="config='basic'"	class="list-group-item"   	ng-class="{'active': config=='basic'}" > Basic</a>
+	    						<a ng-click="config='advanced'"	class="list-group-item "   	ng-class="{'active': config=='advanced'}" >Advanced</a>
+	    					</div>
+    					</div>
+    				</div>
+    			</div>
+    			<div>
+    				
+    			</div>
     		</div>
     	</div>
+
+    	<!-- basic -->
+    	<div class="card col-sm-4"  ng-show="config=='basic'">
+    		<div class="container-fluid text-center">	
+				<div class="container-fluid ">
+
+					<!-- quick -->
+	    			<div id="carousel-new-item-quick" ng-show='(item_type=="quick" && config=="basic") || !hide'>
+	    				<div>
+	    					<br><br><br>
+	    					<h3>Quick Note</h3>
+	    					<p class="small">Add some quick notes for your future reference.</p>
+							<input ng-model="n_note.title" type="text" style="width: 99%; text-align: center;" class="form-control" placeholder="Title of Note"><br>
+	    					<textarea ng-model="n_note.detail" placeholder="Add some details" style="resize: none; height: 20vh; width: 99%" class="form-control"></textarea>
+	    					
+							<br>
+	    				</div>
+	    				<div class="text-left">
+	    					<br><br><br>
+	    					<h3>Note Summary</h3><br>
+	    					<h6 class="text-muted">Title </h6> {{n_note.title}} <br><br>
+	    					<h6 class="text-muted">Details</h6><br>
+	    					<blockquote class="blockquote">
+	    						<p class="small">
+		    						{{n_note.detail}}
+	    						</p>
+	    					</blockquote>
+	    					<br>
+	    					<div class="text-center">
+	    						<button class="btn btn-round btn-primary" ng-disabled="submitting" ng-class="{'disabled':submitting}" ng-click="new_note()">Save Note</button>
+	    					</div>
+	    						
+	    				</div>
+					</div>
+
+					<!-- action -->
+	    			<div id="carousel-new-item-action" ng-show='(item_type=="action" && config=="basic") || !hide'>
+	    				<div>
+	    					<br><br><br>
+	    					<h3>Action</h3>
+	    					<p class="small">Add actions you need to take.</p>
+							<input ng-model="n_note.title" type="text" style="width: 99%; text-align: center;" class="form-control" placeholder="Title of Note"><br>
+	    					<textarea ng-model="n_note.detail" placeholder="Add some details" style="resize: none; height: 20vh; width: 99%" class="form-control"></textarea>
+	    					
+							<br>
+	    				</div>
+	    				<div>
+	    					<br><br><br>
+	    					<h3>How much time would it take?</h3>
+	    					<p class="small">Please give your estimated time to finish the task.</p>
+	    					<br>
+	    					<div class="container-fluid " style="text-align: center;">
+								<input ng-model="n_note.duration.m" type="number" style="width: 16%; text-align: center; float: left;" class="form-control" placeholder="M">
+								<input ng-model="n_note.duration.w" type="number" style="width: 16%; text-align: center; float: left;" class="form-control" placeholder="W">
+								<input ng-model="n_note.duration.d" type="number" style="width: 16%; text-align: center; float: left;" class="form-control" placeholder="D">
+								<input ng-model="n_note.duration.h" type="number" style="width: 16%; text-align: center; float: left;" class="form-control" placeholder="H">
+								<input ng-model="n_note.duration.m_" type="number" style="width: 16%; text-align: center; float: left;" class="form-control" placeholder="m">
+								<input ng-model="n_note.duration.s" type="number" style="width: 16%; text-align: center; float: left;" class="form-control" placeholder="s">	    						
+	    					</div>
+
+							<br>
+	    					
+							<br>
+	    				</div>
+	    				<div class="text-left">
+	    					<br><br><br>
+	    					<h3>Note Summary</h3><br>
+	    					<h6 class="text-muted">Title </h6> {{n_note.title}} <br><br>
+	    					<h6 class="text-muted">Duration </h6> {{
+	    						((n_note.duration.m)? n_note.duration.m+"M ":"")+
+	    						((n_note.duration.w)? n_note.duration.w+"w ":"")+
+	    						((n_note.duration.d)? n_note.duration.d+"d ":"")+
+	    						((n_note.duration.h)? n_note.duration.h+"h ":"")+
+	    						((n_note.duration.m_)? n_note.duration.m_+"m ":"")+
+	    						((n_note.duration.s)? n_note.duration.s+"s ":"")
+	    					}} <br><br>
+	    					<h6 class="text-muted">Details</h6><br>
+	    					<blockquote class="blockquote">
+	    						<p class="small">
+		    						{{n_note.detail}} 
+	    						</p>
+	    					</blockquote>
+	    					<div class="text-center">
+	    						<button class="btn btn-round btn-primary " ng-disabled="submitting" btn-round btn-primary" ng-class="{'disabled':submitting}" ng-click="new_note()">Save Note</button>
+	    					</div>
+	    					<br>
+	    				</div>
+					</div>
+
+					<!-- task -->
+	    			<div id="carousel-new-item-task" ng-show='(item_type=="task" && config=="basic") || !hide'>
+	    				<div>
+	    					<br><br><br>
+	    					<h3>Task</h3>
+	    					<p class="small">Add the things you need to do before a certain deadline.</p>
+							<input ng-model="n_note.title" type="text" style="width: 99%; text-align: center;" class="form-control" placeholder="Title of Note"><br>
+	    					<textarea ng-model="n_note.detail" placeholder="Add some details" style="resize: none; height: 20vh; width: 99%" class="form-control"></textarea>
+	    					
+							<br>
+	    				</div>
+	    				<div>
+							<br><br><br>
+							<h3>So when is the due date?  </h3><br>
+							<div class="container-fluid">
+								<div class="input-group clockpicker">
+								    <input id="input-deadline" type="text" class="form-control" value="09:30">
+								    <span class="input-group-addon">
+								        <span class="pe-7s-clock"></span>
+								    </span>
+								</div>
+								<div class="col-sm-1"></div>
+								<div class="col-sm-10">
+									<div id="dp-deadline" data-date="12-02-2012" data-date-format="dd-mm-yyyy"></div>
+								</div>
+							</div>
+							<br><br>
+						</div>
+	    				<div>
+	    					<br><br><br>
+	    					<h3>How much time would it take?</h3>
+	    					<p class="small">Please give your estimated time to finish the task.</p>
+	    					<br>
+	    					<div class="container-fluid " style="text-align: center;">
+								<input ng-model="n_note.duration.m" type="number" style="width: 16%; text-align: center; float: left;" class="form-control" placeholder="M">
+								<input ng-model="n_note.duration.w" type="number" style="width: 16%; text-align: center; float: left;" class="form-control" placeholder="W">
+								<input ng-model="n_note.duration.d" type="number" style="width: 16%; text-align: center; float: left;" class="form-control" placeholder="D">
+								<input ng-model="n_note.duration.h" type="number" style="width: 16%; text-align: center; float: left;" class="form-control" placeholder="H">
+								<input ng-model="n_note.duration.m_" type="number" style="width: 16%; text-align: center; float: left;" class="form-control" placeholder="m">
+								<input ng-model="n_note.duration.s" type="number" style="width: 16%; text-align: center; float: left;" class="form-control" placeholder="s">	    						
+	    					</div>
+
+							<br>
+	    					
+							<br>
+	    				</div>
+	    				<div class="text-left">
+	    					<br><br><br>
+	    					<h3>Note Summary</h3><br>
+	    					<h6 class="text-muted">Title </h6> {{n_note.title}} <br><br>
+	    					<h6 class="text-muted">Duration </h6> {{
+	    						((n_note.duration.m)? n_note.duration.m+"M ":"")+
+	    						((n_note.duration.w)? n_note.duration.w+"w ":"")+
+	    						((n_note.duration.d)? n_note.duration.d+"d ":"")+
+	    						((n_note.duration.h)? n_note.duration.h+"h ":"")+
+	    						((n_note.duration.m_)? n_note.duration.m_+"m ":"")+
+	    						((n_note.duration.s)? n_note.duration.s+"s ":"")
+	    					}} <br><br>
+	    					<h6 class="text-muted">Due Date </h6> {{n_note.deadline.date+" "+n_note.deadline.time}} <br><br>
+	    					<h6 class="text-muted">Details</h6><br>
+	    					<blockquote class="blockquote">
+	    						<p class="small">
+		    						{{n_note.detail}} 
+	    						</p>
+	    					</blockquote>
+	    					<div class="text-center">
+	    						<button class="btn btn-round btn-primary" ng-disabled="submitting" ng-class="{'disabled':submitting}" ng-click="new_note()">Save Note</button>
+	    					</div>
+	    					<br>
+	    				</div>
+					</div>
+
+					<!-- activity -->
+	    			<div id="carousel-new-item-activity" ng-show='(item_type=="activity" && config=="basic") || !hide'>
+	    				<div>
+	    					<br><br><br>
+	    					<h3>Activity</h3>
+	    					<p class="small">Add the events you need to attend to.</p>
+							<input ng-model="n_note.title" type="text" style="width: 99%; text-align: center;" class="form-control" placeholder="Title of Note"><br>
+	    					<textarea ng-model="n_note.detail" placeholder="Add some details" style="resize: none; height: 20vh; width: 99%" class="form-control"></textarea>
+	    					
+							<br>
+	    				</div>
+	    				<div>
+							<br><br><br>
+							<h3>So when is this happening?</h3><br>
+							<div class="container-fluid">
+								<div class="input-group clockpicker">
+								    <input id="input-schedule" type="text" class="form-control" value="09:30">
+								    <span class="input-group-addon">
+								        <span class="pe-7s-clock"></span>
+								    </span>
+								</div>
+								<div class="col-sm-1"></div>
+								<div class="col-sm-10">
+									<div id="dp-schedule" data-date="12-02-2012" data-date-format="dd-mm-yyyy"></div>
+								</div>
+							</div>
+							<br><br>
+						</div>
+	    				<div>
+	    					<br><br><br>
+	    					<h3>How long would it last?</h3>
+	    					<p class="small">Please give your estimated time to finish the task.</p>
+	    					<br>
+	    					<div class="container-fluid " style="text-align: center;">
+								<input ng-model="n_note.duration.m" type="number" style="width: 16%; text-align: center; float: left;" class="form-control" placeholder="M">
+								<input ng-model="n_note.duration.w" type="number" style="width: 16%; text-align: center; float: left;" class="form-control" placeholder="W">
+								<input ng-model="n_note.duration.d" type="number" style="width: 16%; text-align: center; float: left;" class="form-control" placeholder="D">
+								<input ng-model="n_note.duration.h" type="number" style="width: 16%; text-align: center; float: left;" class="form-control" placeholder="H">
+								<input ng-model="n_note.duration.m_" type="number" style="width: 16%; text-align: center; float: left;" class="form-control" placeholder="m">
+								<input ng-model="n_note.duration.s" type="number" style="width: 16%; text-align: center; float: left;" class="form-control" placeholder="s">	    						
+	    					</div>
+
+							<br>
+	    					
+							<br>
+	    				</div>
+	    				<div class="text-left">
+	    					<br><br><br>
+	    					<h3>Note Summary</h3><br>
+	    					<h6 class="text-muted">Title </h6> {{n_note.title}} <br><br>
+	    					<h6 class="text-muted">Duration </h6> {{
+	    						((n_note.duration.m)? n_note.duration.m+"M ":"")+
+	    						((n_note.duration.w)? n_note.duration.w+"w ":"")+
+	    						((n_note.duration.d)? n_note.duration.d+"d ":"")+
+	    						((n_note.duration.h)? n_note.duration.h+"h ":"")+
+	    						((n_note.duration.m_)? n_note.duration.m_+"m ":"")+
+	    						((n_note.duration.s)? n_note.duration.s+"s ":"")
+	    					}} <br><br>
+	    					<h6 class="text-muted">Schedule </h6> {{n_note.schedule.date+" "+n_note.schedule.time}} <br><br>
+	    					<h6 class="text-muted">Details</h6><br>
+	    					<blockquote class="blockquote">
+	    						<p class="small">
+		    						{{n_note.detail}} 
+	    						</p>
+	    					</blockquote>
+	    					<div class="text-center">
+	    						<button class="btn btn-round btn-primary" ng-disabled="submitting" ng-class="{'disabled':submitting}" ng-click="new_note()">Save Note</button>
+	    					</div>
+	    					<br>
+	    				</div>
+					</div>
+
+					<!-- project -->
+	    			<div id="carousel-new-item-activity" ng-show='(item_type=="project" && config=="basic") || !hide'>
+	    				<div>
+	    					<br><br><br>
+	    					<h3>Project</h3>
+	    					<p class="small">Add projects you will work on.</p>
+							<input ng-model="n_note.title" type="text" style="width: 99%; text-align: center;" class="form-control" placeholder="Title of Note"><br>
+	    					<textarea ng-model="n_note.detail" placeholder="Add some details" style="resize: none; height: 20vh; width: 99%" class="form-control"></textarea>
+	    					
+							<br>
+	    				</div>
+	    				<div>
+	    					<br><br><br>
+	    					<h3>Project Breakdown</h3>
+	    					<p class="small ">Here are the parts of the project to be done</p><br>
+	    					
+	    					<div class="scrollbar scrollbar-danger" style="width: 90%; height: 30vh">
+								<div class="force-overflow" style="width: 95%">
+			    					<div class="list-group" >
+
+
+
+			    						<a class="list-group-item" ng-repeat="i in [1,2,3,4,5]">
+			    							<span class="pull-left" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: 50%">
+				    							Finish  Front end  and backend to feiohoh eoiho	
+				    							<br>	    								
+			    							</span>
+			    							&nbsp
+			    							<span class="pull-right"> 
+			    								<button class="btn btn-xs btn-success btn-round"> 
+			    									<span class="pe-7s-edit"></span>
+			    								</button> 
+			    								<button class="btn btn-danger btn-xs btn-round"> 
+			    									<span class="pe-7s-trash"></span>
+			    								</button>
+			    								<button class="btn btn-xs btn-primary btn-round"> 
+			    									<span class="pe-7s-angle-down"></span>
+			    								</button>
+			    						 	</span>
+			    						</a>
+
+
+			    					</div>
+								</div>
+							</div>
+            
+							<button class="btn btn-primary btn-round"> 
+								<i class="fa fa-plus"></i>
+							</button>
+
+							<br><br>
+
+	    				</div>
+	    				<div>
+							<br><br><br>
+							<h3>So when is the due date?</h3><br>
+							<div class="container-fluid">
+								<div class="input-group clockpicker">
+								    <input id="input-deadline" type="text" class="form-control" value="09:30">
+								    <span class="input-group-addon">
+								        <span class="pe-7s-clock"></span>
+								    </span>
+								</div>
+								<div class="col-sm-1"></div>
+								<div class="col-sm-10">
+									<div id="dp-deadline" data-date="12-02-2012" data-date-format="dd-mm-yyyy"></div>
+								</div>
+							</div>
+							<br><br>
+						</div>
+	    				<div class="text-left">
+	    					<br><br><br>
+	    					<h3>Note Summary</h3><br>
+	    					<h6 class="text-muted">Title </h6> {{n_note.title}} <br><br>
+	    					<h6 class="text-muted">Duration </h6> {{
+	    						((n_note.duration.m)? n_note.duration.m+"M ":"")+
+	    						((n_note.duration.w)? n_note.duration.w+"w ":"")+
+	    						((n_note.duration.d)? n_note.duration.d+"d ":"")+
+	    						((n_note.duration.h)? n_note.duration.h+"h ":"")+
+	    						((n_note.duration.m_)? n_note.duration.m_+"m ":"")+
+	    						((n_note.duration.s)? n_note.duration.s+"s ":"")
+	    					}} <br><br>
+	    					<h6 class="text-muted">Due Date </h6> {{n_note.deadline.date+" "+n_note.deadline.time}} <br><br>
+	    					<h6 class="text-muted">Subtasks </h6> 5 subtasks<br><br>
+	    					<h6 class="text-muted">Details</h6><br>
+	    					<blockquote class="blockquote">
+	    						<p class="small">
+		    						{{n_note.detail}} 
+	    						</p>
+	    					</blockquote>
+	    					<div class="text-center">
+	    						<button class="btn btn-round btn-primary" ng-disabled="submitting" ng-class="{'disabled':submitting}" ng-click="new_note()">Save Note</button>
+	    					</div>
+	    					<br>
+	    				</div>
+					</div>
+
+					<!-- reminder -->
+	    			<div id="carousel-new-item-activity" ng-show='(item_type=="reminder" && config=="basic") || !hide'>
+	    				<div>
+	    					<br><br><br>
+	    					<h3>Reminder</h3>
+	    					<p class="small">Add reminders.</p>
+							<input ng-model="n_note.title" type="text" style="width: 99%; text-align: center;" class="form-control" placeholder="Title of Note"><br>
+	    					<textarea ng-model="n_note.detail" placeholder="Add some details" style="resize: none; height: 20vh; width: 99%" class="form-control"></textarea>
+	    					
+							<br>
+	    				</div>
+	    				<div>
+							<br><br><br>
+							<h3>So when will we remind you?</h3><br>
+							<div class="container-fluid">
+								<div class="input-group clockpicker">
+								    <input id="input-reminder" type="text" class="form-control" value="09:30">
+								    <span class="input-group-addon">
+								        <span class="pe-7s-clock"></span>
+								    </span>
+								</div>
+								<div class="col-sm-1"></div>
+								<div class="col-sm-10">
+									<div id="dp-reminder" data-date="12-02-2012" data-date-format="dd-mm-yyyy"></div>
+								</div>
+							</div>
+							<br><br>
+						</div>
+	    				<div class="text-left">
+	    					<br><br><br>
+	    					<h3>Note Summary</h3><br>
+	    					<h6 class="text-muted">Title </h6> {{n_note.title}} <br><br>
+	    					<h6 class="text-muted">Reminder Date </h6> {{n_note.reminder.date+" "+n_note.reminder.time}} <br><br>
+	    					<h6 class="text-muted">Details</h6><br>
+	    					<blockquote class="blockquote">
+	    						<p class="small">
+		    						{{n_note.detail}} 
+	    						</p>
+	    					</blockquote>
+	    					<div class="text-center">
+	    						<button class="btn btn-round btn-primary" ng-disabled="submitting" ng-class="{'disabled':submitting}" ng-click="new_note()">Save Note</button>
+	    					</div>
+	    					<br>
+	    				</div>
+					</div>
+
+
+				</div>
+							
+				<br><br><br>
+    		</div>
+    	</div>
+
+    	<!-- advanced -->
+    	<div class="card col-sm-6" ng-show="config=='advanced'">
+    		<div class="container-fluid text-center">
+    			<div class="container-fluid text-left">
+					<div>
+						<br>
+						<h3>Add note</h3>
+						<p class="text-muted small">Advanced mode</p>
+
+    					<div class="scrollbar scrollbar-primary" style="width: 100%; height: 50vh">
+							<div class="force-overflow" style="width: 95%">
+								<br>
+								<div class="row">
+									<div class="col-sm-6">
+
+										<h6>Details</h6> <br>
+										<input ng-model="n_note.title" type="text" style="width: 99%; text-align: center;" class="form-control" placeholder="Title of Note"><br>
+			    						<textarea ng-model="n_note.detail" placeholder="Add some details" style="resize: none; height: 17vh; width: 99%" class="form-control"></textarea>
+										<br>
+										<h6>Duration</h6><br>
+				    					<div class="container-fluid " style="text-align: center;">
+											<input ng-model="n_note.duration.m" type="number" style="width: 16%; text-align: center; float: left; font-size: 6pt" class="form-control" placeholder="M">
+											<input ng-model="n_note.duration.w" type="number" style="width: 16%; text-align: center; float: left; font-size: 6pt" class="form-control" placeholder="W">
+											<input ng-model="n_note.duration.d" type="number" style="width: 16%; text-align: center; float: left; font-size: 6pt" class="form-control" placeholder="D">
+											<input ng-model="n_note.duration.h" type="number" style="width: 16%; text-align: center; float: left; font-size: 6pt" class="form-control" placeholder="H">
+											<input ng-model="n_note.duration.m_" type="number" style="width: 16%; text-align: center; float: left; font-size: 6pt" class="form-control" placeholder="m">
+											<input ng-model="n_note.duration.s" type="number" style="width: 16%; text-align: center; float: left; font-size: 6pt" class="form-control" placeholder="s">	    						
+				    					</div>
+									</div>
+									<div class="col-sm-6">
+										<h6>Start of Event</h6> <br>
+							            <input   id="dp-schedule-advanced" type="text" class="form-control datepicker" placeholder="Schedule" />
+										<div class="input-group clockpicker">
+										    <input id="input-schedule" type="text" class="form-control" placeholder="Time">
+										    <span class="input-group-addon">
+										        <span class="pe-7s-clock"></span>
+										    </span>
+										</div> <br>
+										<h6>Due Date</h6> <br>
+							            <input id="dp-deadline-advanced" type="text" class="form-control datepicker" placeholder="Deadline" />
+										<div class="input-group clockpicker">
+										    <input id="input-deadline"  type="text" class="form-control" placeholder="Time">
+										    <span class="input-group-addon">
+										        <span class="pe-7s-clock"></span>
+										    </span>
+										</div><br>
+										<h6>Reminder</h6> <br>
+							            <input  id="dp-reminder-advanced" type="text" class="form-control datepicker" placeholder="Reminder" />
+										<div class="input-group clockpicker">
+										    <input  id="input-reminder" type="text" class="form-control" placeholder="Time">
+										    <span class="input-group-addon">
+										        <span class="pe-7s-clock"></span>
+										    </span>
+										</div>
+									</div>
+								</div>
+
+								<hr>
+								<h6>Delegated to</h6>
+								<p class="text-muted small">Entities that need to be contacted</p>
+		            			<div class="scrollbar scrollbar-danger" style="width: 90%; height: 30vh">
+									<div class="force-overflow" style="width: 95%">
+				    					<div class="list-group" >
+
+
+
+				    						<a class="list-group-item" ng-repeat="i in [1,2,3,4,5]">
+				    							<span class="pull-left" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: 50%">
+					    							Justine Che T. Romero
+					    							<br>	    								
+				    							</span>
+				    							&nbsp
+				    							<span class="pull-right"> 
+				    								<button class="btn btn-xs btn-success btn-round"> 
+				    									<span class="pe-7s-edit"></span>
+				    								</button> 
+				    								<button class="btn btn-danger btn-xs btn-round"> 
+				    									<span class="pe-7s-trash"></span>
+				    								</button>
+				    						 	</span>
+				    						</a>
+
+
+				    					</div>
+									</div>
+								</div>
+								<div class="text-center">
+									<button class="btn btn-primary btn-round"> 
+										<i class="fa fa-plus"></i> Add New
+									</button>
+									&nbsp&nbsp
+									<button class="btn btn-primary btn-round"> 
+										<i class="fa fa-plus"></i> Get from Contacts
+									</button>
+								</div>
+								<hr>
+								<h6>Subtasks</h6>
+								<p class="small text-muted">Make a project</p>
+
+	    					
+		    					<div class="scrollbar scrollbar-danger" style="width: 90%; height: 30vh">
+									<div class="force-overflow" style="width: 95%">
+				    					<div class="list-group" >
+
+
+
+				    						<a class="list-group-item" ng-repeat="i in [1,2,3,4,5]">
+				    							<span class="pull-left" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: 50%">
+					    							Finish  Front end  and backend to feiohoh eoiho	
+					    							<br>	    								
+				    							</span>
+				    							&nbsp
+				    							<span class="pull-right"> 
+				    								<button class="btn btn-xs btn-success btn-round"> 
+				    									<span class="pe-7s-edit"></span>
+				    								</button> 
+				    								<button class="btn btn-danger btn-xs btn-round"> 
+				    									<span class="pe-7s-trash"></span>
+				    								</button>
+				    								<button class="btn btn-xs btn-primary btn-round"> 
+				    									<span class="pe-7s-angle-down"></span>
+				    								</button>
+				    						 	</span>
+				    						</a>
+
+
+				    					</div>
+									</div>
+								</div>
+								<div class="text-center">
+									<button class="btn btn-primary btn-round"> 
+										<i class="fa fa-plus"></i> Add New
+									</button>
+									&nbsp&nbsp
+									<button class="btn btn-primary btn-round"> 
+										<i class="fa fa-plus"></i> Get from Notes
+									</button>
+								</div>
+		            			<br><br>
+							</div>
+						</div>
+						<br><br>
+	    					<div class="text-center">
+	    						<button  ng-disabled="submitting" ng-class="{'disabled':submitting}" ng-click="new_note()"class="btn btn-round btn-primary">Save Note</button>
+	    					</div>
+						<br><br>
+					</div>	    		
+    			</div>
+    		</div>
+    	</div>
+
     </div>
 
 

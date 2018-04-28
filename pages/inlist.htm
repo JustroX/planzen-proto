@@ -1,4 +1,4 @@
-<div class="main-panel">
+<div class="main-panel" ng-controller='inlistController'>
    	<div ng-include="'navbar.htm'"></div>
     <br><br>
     <div class="container text-center">
@@ -12,7 +12,7 @@
         <button class="btn btn-round btn-danger">DECLUTTER</button>
     </div>
     <br><br><br><br>
-    <div class="container">
+    <!-- <div class="container">
         <br><br>
         PINNED
         <br><br>
@@ -118,13 +118,73 @@
 
 
 
-    </div>
+    </div> -->
     <div class="container">
         <br><br>
         TODAY
         <br><br>
-        <div class="row">
+        <div class="row" ng-repeat="offset in n">
 
+            <div ng-repeat="note in notes.slice(offset*4,offset*4+4)" class="col-sm-3">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">{{note.title}}</h4>
+                        <!-- <p class="category">Next Action</p> -->
+                        <hr>
+                    </div>
+                    <div class="content">
+                        <blockquote class="small" style="white-space: pre;">{{note.details}}
+                        </blockquote>
+                        <p class="small">
+
+                            <span  ng-show="note.duration">
+                                <b>  Duration: &nbsp&nbsp</b>
+                                {{
+                                    ((note.duration.m)? note.duration.m+"M ":"")+
+                                    ((note.duration.w)? note.duration.w+"w ":"")+
+                                    ((note.duration.d)? note.duration.d+"d ":"")+
+                                    ((note.duration.h)? note.duration.h+"h ":"")+
+                                    ((note.duration.m_)? note.duration.m_+"m ":"")+
+                                    ((note.duration.s)? note.duration.s+"s ":"") 
+                                }} 
+                                <br>
+                            </span>
+                            <span  ng-show="note.due.date">
+                                <b >
+                                    Deadline: &nbsp&nbsp
+                                </b>
+                                {{  note.due.date }} &nbsp&nbsp {{note.due.time }} 
+                                <br>
+                            </span>
+                            <span  ng-show="note.schedule.date">
+                                <b >
+                                    Schedule: &nbsp&nbsp
+                                </b>
+                                {{  note.schedule.date }} &nbsp&nbsp {{note.schedule.time }} 
+                                <br>
+                            </span>
+                            <span  ng-show="note.reminder.date">
+                                <b >
+                                    Reminder: &nbsp&nbsp
+                                </b>
+                                {{  note.reminder.date }} &nbsp&nbsp {{note.reminder.time }} 
+                                <br>
+                            </span>
+
+
+                        </p>
+                        <hr>
+                        <div class="footer">
+                            <div class="stats">
+                                <i class="fa fa-clock-o"></i> Added a moment ago
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+<!-- 
 
             <div class="col-sm-3">
                 <div class="card">
@@ -151,10 +211,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
 
 
-        </div>
     </div>
 </div>

@@ -1,0 +1,23 @@
+<div id="carousel-new-item-quick" ng-show='(item_type=="quick" && config=="basic") || !hide'>
+	<div>
+		<br><br><br>
+		<h3>Quick Note</h3>
+		<p class="small">Add some quick notes for your future reference.</p>
+		<input ng-model="n_note.title" type="text" style="width: 99%; text-align: center;" class="form-control" placeholder="Title of Note"><br>
+		<textarea ng-model="n_note.detail" placeholder="Add some details" style="resize: none; height: 20vh; width: 99%" class="form-control"></textarea>
+		
+		<br>
+	</div>
+	<div class="text-left">
+		<br><br><br>
+		<h3>Note Summary</h3><br>
+		<h6 class="text-muted">Title </h6> {{n_note.title}} <br><br>
+		<h6 class="text-muted">Details</h6><br>
+		<blockquote class="blockquote">
+			<p class="small">
+				{{n_note.detail}}
+			</p>
+		</blockquote>
+		<br>
+	</div>
+</div>

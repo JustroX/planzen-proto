@@ -3,10 +3,10 @@ var app = express();
 var sqlite = require('sqlite3').verbose();
 const crypto = require('crypto');
 
-const salt = "idkwhatthef*ckismysaltButIshouldmakethisasrandomaspossiblelolwubbalubbadubdubrandomsaltrandomsaltthatnoonewouldknowmuwahahahahaha";
+const main_salt = "idkwhatthef*ckismysaltButIshouldmakethisasrandomaspossiblelolwubbalubbadubdubrandomsaltrandomsaltthatnoonewouldknowmuwahahahahaha";
 
 //security enncryptions
-function encrypt(text)
+function encrypt(text,salt=main_salt)
 {
 	let enc = crypto.createCipher("aes-256-ctr",salt);
 	let crypted = enc.update(text,'utf-8','hex') ;
@@ -14,7 +14,7 @@ function encrypt(text)
 	return crypted;
 }
 
-function decrypt(text)
+function decrypt(text,salt=main_salt)
 {
 	let dec = crypto.createDecipher("aes-256-ctr",salt);
 	let d = dec.update(text,'hex','utf-8');
@@ -22,6 +22,17 @@ function decrypt(text)
 	return d;
 }
 
+function hash(text)
+{
+	return crypto.createHmac('sha256',main_salt).update(text+"").digest('hex')+"";
+}
+
+function unwrap(sess_identifier,sign)
+{
+	let str = encrypt(main_salt,sess_identifier);
+	let sign2 = hash(str);
+	return sign2==sign;
+}
 
 //middlewares
 var cookieParser = require('cookie-parser');
@@ -41,15 +52,9 @@ app.listen(3000);
 console.log("App listening in the port 8080");
 
 //navigator
-app.get('/', function(req,res){
-	res.sendfile('./index.html');
-});
-app.get('*', function(req,res){
-	res.sendfile("./"+req.url.split("?")[0]);
-});
 app.post('/api/auth',function(req,res){
 	console.log(req.body);
-	let pword = crypto.createHmac('sha256',salt).update(req.body.password+"").digest('hex')+"";
+	let pword = hash(req.body.password+"");
 	let uname = req.body.username;
 	db.get(`SELECT * FROM user WHERE username=? AND password=?`,[uname,pword],(err, row)=>{
 		if(err)
@@ -60,10 +65,63 @@ app.post('/api/auth',function(req,res){
 		if(row)
 		{
 			let sess_identifier = encrypt(row.id+"");
+			let sign = hash(encrypt(main_salt,sess_identifier));
 
-			res.send(JSON.stringify({success:"Authentication Successful",id:sess_identifier}));
+			res.send(JSON.stringify({success:"Authentication Successful",id:sess_identifier,sign:sign}));
 		}
 		else
 			res.send(JSON.stringify({error:"Authentication Error"}));
 	});
+});
+
+app.post('/api/note/add',function(req,res){
+	let b = req.body;
+	if(unwrap(b.id,b.sign))
+	{
+		b.id = decrypt(b.id);
+		let note = b.payload;
+		db.run(`INSERT INTO note (owner,title,details,duration,schedule,due,reminder,contact,subtask) VALUES (?,?,?,?,?,?,?,?,?)`,
+		[
+			b.id,
+			note.title,
+			note.detail,
+			JSON.stringify(note.duration),
+			JSON.stringify(note.schedule),
+			JSON.stringify(note.deadline),
+			JSON.stringify(note.reminder),
+			JSON.stringify(note.contact),
+			JSON.stringify(note.subtask),
+		]
+		,function(err){
+			if(err)
+			{
+				res.send(JSON.stringify({error:err}));
+			}
+			else
+				res.send({success:"Note Added"});
+		});
+	}
+	else
+	res.send(JSON.stringify({error:"Token integrity failed."}));
+});
+
+app.get('/api/note/get/inlist/:page/:id/:sign',function(req,res){
+	let param = req.params;
+	// console.log(unwrap(param.id,param.sign));
+	if(unwrap(param.id,param.sign))
+	{
+		let notes = [];
+		db.all(`SELECT * FROM note WHERE owner = ? LIMIT 8 OFFSET ?`,[decrypt(param.id),param.page-1],(err,rows)=>
+		{
+			res.send({success:"Data retrieved.", payload: rows});
+		});
+	}
+	else
+		res.send({error: "Token integrity failed."});
+});
+app.get('/', function(req,res){
+	res.sendfile('./index.html');
+});
+app.get('*', function(req,res){
+	res.sendfile("./"+req.url.split("?")[0]);
 });
